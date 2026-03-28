@@ -13,7 +13,10 @@ app = FastAPI(title="Luxe Fashion API")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://luxee-frontend.vercel.app",  # Add your specific Vercel URL here
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
