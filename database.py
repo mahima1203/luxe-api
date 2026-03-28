@@ -10,6 +10,14 @@ load_dotenv()
 # For testing or before setting up, you can fallback to sqlite
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./luxe.db")
 
+# 🛠️ AUTO-FIX: Handle common deployment URL issues (e.g. from Render/Heroku)
+if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Remove any accidental whitespace from copy-pasting
+if SQLALCHEMY_DATABASE_URL:
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.strip()
+
 # SQLite needs connect_args={"check_same_thread": False}, Postgres doesn't
 options = {"check_same_thread": False} if SQLALCHEMY_DATABASE_URL.startswith("sqlite") else {}
 
