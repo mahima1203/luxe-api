@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey, Text
+from sqlalchemy.orm import relationship
 from database import Base
 import datetime
 
@@ -85,6 +86,8 @@ class CartItem(Base):
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    
+    product = relationship("Product")
 
 class WishlistItem(Base):
     __tablename__ = "wishlist_items"
@@ -93,3 +96,5 @@ class WishlistItem(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    product = relationship("Product")

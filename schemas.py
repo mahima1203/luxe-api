@@ -155,6 +155,7 @@ class CartItemResponse(BaseModel):
     product_id: int
     quantity: int
     created_at: datetime.datetime
+    product: Product
 
     class Config:
         from_attributes = True
@@ -166,6 +167,7 @@ class WishlistItemResponse(BaseModel):
     id: int
     product_id: int
     created_at: datetime.datetime
+    product: Product
 
     class Config:
         from_attributes = True

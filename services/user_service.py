@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 import models, schemas
 
 def update_user_profile(user: models.User, update_data: schemas.UserUpdate, db: Session):
@@ -21,7 +21,7 @@ def soft_delete_user(user: models.User, db: Session):
 # ─── Cart Management ───────────────────────────────────────────────────────────
 
 def get_cart(user_id: int, db: Session):
-    return db.query(models.CartItem).filter(models.CartItem.user_id == user_id).all()
+    return db.query(models.CartItem).options(joinedload(models.CartItem.product)).filter(models.CartItem.user_id == user_id).all()
 
 def add_to_cart(user_id: int, data: schemas.CartItemCreate, db: Session):
     existing = db.query(models.CartItem).filter(
@@ -65,7 +65,7 @@ def remove_from_cart(user_id: int, item_id: int, db: Session):
 # ─── Wishlist Management ───────────────────────────────────────────────────────
 
 def get_wishlist(user_id: int, db: Session):
-    return db.query(models.WishlistItem).filter(models.WishlistItem.user_id == user_id).all()
+    return db.query(models.WishlistItem).options(joinedload(models.WishlistItem.product)).filter(models.WishlistItem.user_id == user_id).all()
 
 def add_to_wishlist(user_id: int, data: schemas.WishlistItemCreate, db: Session):
     existing = db.query(models.WishlistItem).filter(
