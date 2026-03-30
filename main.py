@@ -10,13 +10,23 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Luxe Fashion API")
 
+import os
+
 # Configure CORS
+# Define base origins that are always allowed (local dev)
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# Pull production origins from an Environment Variable (comma-separated list)
+env_origins = os.getenv("ALLOWED_ORIGINS")
+if env_origins:
+    origins.extend([o.strip() for o in env_origins.split(",")])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://luxee-frontend.vercel.app",  # Add your specific Vercel URL here
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
