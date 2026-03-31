@@ -81,6 +81,15 @@ def verify_payment_signature(user_id: int, order_id: int, rzp_order_id: str, rzp
         # Fallback for dev
         order.status = "paid"
         order.razorpay_payment_id = rzp_payment_id
+        
+        # CLEAR CART for successful order items
+        order_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order.id).all()
+        for item in order_items:
+            db.query(models.CartItem).filter(
+                models.CartItem.user_id == user_id,
+                models.CartItem.product_id == item.product_id
+            ).delete()
+
         db.commit()
         db.refresh(order)
         return order
@@ -98,6 +107,15 @@ def verify_payment_signature(user_id: int, order_id: int, rzp_order_id: str, rzp
         # Signature is valid. Mark as paid
         order.status = "paid"
         order.razorpay_payment_id = rzp_payment_id
+        
+        # CLEAR CART for successful order items
+        order_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order.id).all()
+        for item in order_items:
+            db.query(models.CartItem).filter(
+                models.CartItem.user_id == user_id,
+                models.CartItem.product_id == item.product_id
+            ).delete()
+
         db.commit()
         db.refresh(order)
         return order
