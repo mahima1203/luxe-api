@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 import json
@@ -49,6 +49,25 @@ def get_order(
     order = order_service.get_order_by_id(user.id, order_id, db)
     items = order_service.get_order_items(order.id, db)
     return _build_order_response(order, items)
+
+
+@router.put("/{order_id}/status")
+def update_order_status(
+    order_id: int,
+    status: str,
+    db: Session = Depends(get_db)
+):
+    """
+    MANUAL STATUS UPDATE (DEV/ADMIN ONLY)
+    Allows manually setting an order status to 'delivered' for testing reviews.
+    """
+    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    order.status = status
+    db.commit()
+    return {"message": f"Order {order_id} status updated to {status}"}
 
 
 # ─── Helper ────────────────────────────────────────────────────────────────────

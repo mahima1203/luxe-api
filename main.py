@@ -3,12 +3,40 @@ from fastapi.middleware.cors import CORSMiddleware
 import models
 from database import engine
 
-from api.routers import products, auth, users, addresses, orders, payments
+from api.routers import products, auth, users, addresses, orders, payments, reviews
 
 # Create backend tables if they don't exist
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Luxe Fashion API")
+app = FastAPI(
+    title="Luxe Fashion API",
+    swagger_ui_parameters={"persistAuthorization": True}
+)
+
+# Enable "Authorize" button in Swagger UI
+from fastapi.openapi.utils import get_openapi
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="Luxe Fashion API",
+        version="1.0.0",
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "HTTPBearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+    # Apply security globally to all endpoints (optional, but good for dev)
+    # openapi_schema["security"] = [{"HTTPBearer": []}]
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 # Configure CORS
 # This allows:
@@ -37,4 +65,5 @@ app.include_router(users.router)
 app.include_router(addresses.router)
 app.include_router(orders.router)
 app.include_router(payments.router)
+app.include_router(reviews.router)
 
