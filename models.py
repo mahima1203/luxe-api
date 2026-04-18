@@ -77,6 +77,7 @@ class OrderItem(Base):
     product_image = Column(String, nullable=False)
     price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
+    size = Column(String, nullable=True)
 
 class CartItem(Base):
     __tablename__ = "cart_items"
@@ -85,6 +86,7 @@ class CartItem(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1, nullable=False)
+    size = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     
     product = relationship("Product")

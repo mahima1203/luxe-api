@@ -26,7 +26,8 @@ def get_cart(user_id: int, db: Session):
 def add_to_cart(user_id: int, data: schemas.CartItemCreate, db: Session):
     existing = db.query(models.CartItem).filter(
         models.CartItem.user_id == user_id, 
-        models.CartItem.product_id == data.product_id
+        models.CartItem.product_id == data.product_id,
+        models.CartItem.size == data.size
     ).first()
     
     if existing:
@@ -35,7 +36,7 @@ def add_to_cart(user_id: int, data: schemas.CartItemCreate, db: Session):
         db.refresh(existing)
         return existing
         
-    item = models.CartItem(user_id=user_id, product_id=data.product_id, quantity=data.quantity)
+    item = models.CartItem(user_id=user_id, product_id=data.product_id, quantity=data.quantity, size=data.size)
     db.add(item)
     db.commit()
     db.refresh(item)

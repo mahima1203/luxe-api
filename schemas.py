@@ -112,6 +112,7 @@ class OrderItemCreate(BaseModel):
     product_image: str
     price: float
     quantity: int
+    size: Optional[str] = None
 
 class OrderItemResponse(BaseModel):
     id: int
@@ -121,6 +122,7 @@ class OrderItemResponse(BaseModel):
     product_image: str
     price: float
     quantity: int
+    size: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -148,6 +150,7 @@ class OrderResponse(BaseModel):
 class CartItemCreate(BaseModel):
     product_id: int
     quantity: int = 1
+    size: Optional[str] = None
 
 class CartItemUpdate(BaseModel):
     quantity: int
@@ -156,6 +159,7 @@ class CartItemResponse(BaseModel):
     id: int
     product_id: int
     quantity: int
+    size: Optional[str] = None
     created_at: datetime.datetime
     product: Product
 

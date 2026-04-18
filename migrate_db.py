@@ -44,6 +44,24 @@ def migrate():
             else:
                 print(f"Error adding users.{col_name}: {e}")
 
+    try:
+        cursor.execute("ALTER TABLE cart_items ADD COLUMN size VARCHAR")
+        print("Added cart_items.size")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("cart_items.size already exists - skipping.")
+        else:
+            print(f"Error adding cart_items.size: {e}")
+            
+    try:
+        cursor.execute("ALTER TABLE order_items ADD COLUMN size VARCHAR")
+        print("Added order_items.size")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("order_items.size already exists - skipping.")
+        else:
+            print(f"Error adding order_items.size: {e}")
+
     conn.commit()
     conn.close()
     print("Migration complete.")
