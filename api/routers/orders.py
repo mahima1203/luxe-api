@@ -92,6 +92,7 @@ def _build_order_response(order: models.Order, items: list[models.OrderItem]) ->
                 "product_image": item.product_image,
                 "price": item.price,
                 "quantity": item.quantity,
+                "size": item.size,
             }
             for item in items
         ],
